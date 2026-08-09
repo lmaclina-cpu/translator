@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#8ed3ef" />
+<title>El Impostor Peques 🦖 — juego para toda la familia</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦖</text></svg>" />
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ══════════ INICIO ══════════ -->
+  <section class="screen active" id="screen-home">
+    <div class="hero">
+      <div class="mascot">🦖</div>
+      <h1 class="title">EL IMPOSTOR</h1>
+      <div class="badge-peques">PEQUES</div>
+      <p class="tagline">Todos saben la palabra. ¡Uno se la inventa!</p>
+    </div>
+
+    <div class="card tilt-l">
+      <h3>🎈 Cómo se juega</h3>
+      <ol>
+        <li>Id pasando el móvil. Cada uno mira <b>su palabra en secreto</b>.</li>
+        <li>A uno le tocará ser el <b>impostor</b>: no sabe la palabra.</li>
+        <li>Por turnos, cada uno dice <b>UNA palabra</b> que tenga que ver.</li>
+        <li>¡Hablad y votad! ¿Quién es el impostor?</li>
+      </ol>
+    </div>
+
+    <button class="btn btn-go" data-go="setup">¡JUGAR! 🎉</button>
+    <p class="mini-note">Para 3 a 10 jugadores · Niños y mayores juntos</p>
+  </section>
+
+  <!-- ══════════ CONFIGURACIÓN ══════════ -->
+  <section class="screen" id="screen-setup">
+    <header class="topbar">
+      <button class="icon-btn" data-go="home" aria-label="Volver">←</button>
+      <h2>Preparar la partida</h2>
+    </header>
+
+    <div class="card">
+      <div class="row-between">
+        <div>
+          <h3>👦 ¿Cuántos sois?</h3>
+          <p class="hint">De 3 a 10 jugadores</p>
+        </div>
+        <div class="stepper">
+          <button class="step-btn" id="players-minus" aria-label="Menos jugadores">−</button>
+          <span class="step-value" id="players-count">5</span>
+          <button class="step-btn" id="players-plus" aria-label="Más jugadores">+</button>
+        </div>
+      </div>
+      <div class="names" id="names-list"></div>
+    </div>
+
+    <div class="card">
+      <h3>🦖 ¿Cuántos impostores?</h3>
+      <p class="hint">Con 2 o 3 es mucho más difícil pillarlos.</p>
+      <div class="chips" id="impostors-chips">
+        <button class="chip" data-imp="1">1</button>
+        <button class="chip" data-imp="2">2</button>
+        <button class="chip" data-imp="3">3</button>
+      </div>
+      <label class="switch-row" id="know-row">
+        <span>
+          <b>Que se conozcan</b>
+          <small>Cada impostor verá quiénes son los otros.</small>
+        </span>
+        <input type="checkbox" id="opt-know" class="switch" />
+        <span class="slider" aria-hidden="true"></span>
+      </label>
+    </div>
+
+    <div class="card">
+      <h3>🔍 Ayuda para el impostor</h3>
+      <label class="switch-row">
+        <span>
+          <b>Darle una pista</b>
+          <small>Verá una pistita, como «Fruta» o «Mar». Recomendado si juegan peques.</small>
+        </span>
+        <input type="checkbox" id="opt-hint" class="switch" checked />
+        <span class="slider" aria-hidden="true"></span>
+      </label>
+    </div>
+
+    <div class="card">
+      <h3>📚 Temas</h3>
+      <p class="hint">Elige los que quieras. Se mezclan todos.</p>
+      <div class="packs" id="packs-list"></div>
+      <p class="warn" id="packs-warn" hidden>¡Elige al menos un tema!</p>
+    </div>
+
+    <div class="card">
+      <h3>⏰ Tiempo para hablar</h3>
+      <div class="chips" id="timer-chips">
+        <button class="chip" data-timer="0">Sin reloj</button>
+        <button class="chip" data-timer="60">1 min</button>
+        <button class="chip" data-timer="120">2 min</button>
+        <button class="chip" data-timer="180">3 min</button>
+        <button class="chip" data-timer="300">5 min</button>
+      </div>
+    </div>
+
+    <button class="btn btn-go" id="btn-start">¡REPARTIR! 🎲</button>
+    <div class="spacer"></div>
+  </section>
+
+  <!-- ══════════ REPARTO ══════════ -->
+  <section class="screen" id="screen-deal">
+    <div class="deal-progress" id="deal-progress"></div>
+
+    <div class="deal-wrap">
+      <div class="pass-note" id="deal-pass">Ahora le toca a…</div>
+      <h2 class="deal-name" id="deal-name">Jugador 1</h2>
+
+      <div class="reveal-card" id="reveal-card">
+        <div class="face front">
+          <div class="tap-emoji">👆</div>
+          <p>Toca para ver tu palabra</p>
+          <small>¡Que nadie mire! 🤫</small>
+        </div>
+        <div class="face back" id="reveal-back"></div>
+      </div>
+
+      <button class="btn btn-go" id="btn-deal-next" hidden>Tapar y pasar ▸</button>
+    </div>
+  </section>
+
+  <!-- ══════════ DEBATE ══════════ -->
+  <section class="screen" id="screen-play">
+    <div class="hero small">
+      <div class="mascot small">🗣️</div>
+      <h2 class="title sm">¡A HABLAR!</h2>
+    </div>
+
+    <div class="card starter">
+      <p class="hint">Empieza</p>
+      <h2 class="starter-name" id="starter-name">—</h2>
+      <p class="hint" id="turn-order"></p>
+    </div>
+
+    <div class="timer-box card" id="timer-box">
+      <div class="timer" id="timer-display">--:--</div>
+      <div class="timer-actions">
+        <button class="btn btn-small" id="btn-timer-toggle">Pausa</button>
+        <button class="btn btn-small" id="btn-timer-reset">Otra vez</button>
+      </div>
+    </div>
+
+    <div class="card tilt-r tips">
+      <h3>💡 Acuérdate</h3>
+      <ul>
+        <li>Solo <b>UNA palabra</b> por turno.</li>
+        <li>No repitas lo que ya han dicho.</li>
+        <li>Si eres el impostor… ¡disimula! 😄</li>
+      </ul>
+    </div>
+
+    <button class="btn btn-go" data-go="vote">¡A VOTAR! 🗳️</button>
+    <div class="spacer"></div>
+  </section>
+
+  <!-- ══════════ VOTACIÓN ══════════ -->
+  <section class="screen" id="screen-vote">
+    <header class="topbar">
+      <button class="icon-btn" data-go="play" aria-label="Volver">←</button>
+      <h2>¿Quién es?</h2>
+    </header>
+    <p class="hint center">Contad los votos en voz alta y pulsad el nombre.</p>
+    <div class="vote-list" id="vote-list"></div>
+    <button class="btn btn-small wide" id="btn-no-vote">Nadie / empate</button>
+    <div class="spacer"></div>
+  </section>
+
+  <!-- ══════════ RESULTADO ══════════ -->
+  <section class="screen" id="screen-result">
+    <div class="result-head" id="result-head"></div>
+
+    <div class="card word-reveal">
+      <p class="hint">La palabra era</p>
+      <h2 class="secret-word" id="result-word">—</h2>
+      <p class="hint" id="result-pack"></p>
+    </div>
+
+    <div class="card">
+      <h3 id="result-imp-title">El impostor era…</h3>
+      <div class="imp-list" id="result-impostors"></div>
+    </div>
+
+    <button class="btn btn-go" id="btn-again">¡OTRA! 🔁</button>
+    <button class="btn btn-small wide" data-go="setup">Cambiar cosas</button>
+    <div class="spacer"></div>
+  </section>
+
+</div>
+
+<script src="words.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

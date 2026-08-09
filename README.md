@@ -3,7 +3,21 @@
 Juego de fiesta para **un solo móvil**. Todos los jugadores conocen la palabra secreta…
 todos menos el impostor. Hay que descubrirlo antes de que él descubra la palabra.
 
-Sin instalación, sin registro y **sin internet**: son tres archivos estáticos.
+Sin instalación, sin registro y **sin internet**: son archivos estáticos.
+
+## Dos versiones
+
+| | Versión | Para quién | Dónde |
+|---|---|---|---|
+| 🕵️ | **El Impostor** | Adultos. Incluye categoría picante (+18). | `/` → [lmaclina-cpu.github.io/translator/](https://lmaclina-cpu.github.io/translator/) |
+| 🦖 | **El Impostor Peques** | Niños desde 8-10 años y familias. Sin contenido adulto. | `/peques/` → [lmaclina-cpu.github.io/translator/peques/](https://lmaclina-cpu.github.io/translator/peques/) |
+
+Son **apps independientes**: cada una con sus propias palabras, su propio aspecto
+(oscura de neón la de adultos, clara tipo pegatinas la de peques) y sus propios
+ajustes guardados. Tocar una no afecta a la otra.
+
+El resto de este README describe la versión de adultos; la de peques funciona
+exactamente igual y su banco de palabras está en `peques/words.js`.
 
 ## Cómo jugar
 
@@ -60,10 +74,16 @@ salga con la etiqueta **+18**.
 ## Estructura
 
 ```
-index.html   Pantallas del juego
-styles.css   Estilos (tema oscuro, pensado para móvil)
-app.js       Lógica: reparto, temporizador, votación y resultado
-words.js     Bancos de palabras y pistas
+index.html        Pantallas del juego (versión adultos)
+styles.css        Estilos: tema oscuro de neón
+app.js            Lógica: reparto, temporizador, votación y resultado
+words.js          Bancos de palabras y pistas
+
+peques/           Versión infantil, independiente
+  index.html      Mismas pantallas, textos para peques
+  styles.css      Estilos: tema claro tipo pegatinas
+  app.js          Misma lógica, con su propio guardado
+  words.js        400 palabras aptas para niños
 ```
 
 ## Publicarlo
