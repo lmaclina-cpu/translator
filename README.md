@@ -33,12 +33,16 @@ la misma configuración.
 
 | Pack | Palabras | Contenido |
 |---|---|---|
-| 🎉 Divertidas | 113 | Situaciones y objetos del día a día, con retranca. |
-| 🌶️ Picante **(+18)** | 83 | Subida de tono, tipo despedida de soltero. Para grupos con confianza. |
-| ⭐ Famosos y Pop | 50 | Personajes, pelis, series y videojuegos. |
-| 🧩 Clásicas | 50 | Limpias y fáciles, aptas para todos los públicos. |
+| 🎉 Divertidas | 100 | Cosas del día a día con retranca. |
+| 🌶️ Picante **(+18)** | 100 | Sin filtros. Para grupos con confianza. |
+| ⭐ Famosos y Pop | 100 | Personajes, pelis, series y videojuegos. |
+| 🧩 Clásicas | 100 | Fáciles y aptas para todos los públicos. |
 
-**Total: 296 palabras**, cada una con su pista asociada.
+**Total: 400 palabras**, cada una con su pista asociada.
+
+Todas son palabras reales de **una o dos palabras** como mucho (las de dos son
+casi siempre nombres propios: *Bad Bunny*, *Sexo oral*, *Van Gogh*). Nada de
+frases largas: si algo no se puede decir en una palabra, no entra en el banco.
 
 ## Añadir tus propias palabras
 
