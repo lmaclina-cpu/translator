@@ -322,8 +322,14 @@ p { margin: 0 0 10px; }
 .reveal-card.done .front-done { display: flex; }
 .reveal-card.done { cursor: default; }
 .reveal-card.done .face.front { background: linear-gradient(150deg, #1b1836, #14122c); }
-.tap-emoji { font-size: 2.6rem; animation: bob 1.5s ease-in-out infinite; }
-.reveal-card.done .tap-emoji { animation: none; opacity: .8; }
+.tap-emoji { font-size: 2.6rem; backface-visibility: hidden; }
+/* El dedo solo se mueve con la carta quieta. Si sigue animado durante el
+   giro, el navegador lo promociona a su propia capa, deja de heredar la
+   rotación 3D del padre y se ve plano "flotando" sobre la carta. */
+.reveal-card:not(.flipped):not(.spinning):not(.done) .tap-emoji {
+  animation: bob 1.5s ease-in-out infinite;
+}
+.reveal-card.done .tap-emoji { opacity: .8; }
 @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
 .face.back {
