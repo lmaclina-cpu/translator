@@ -21,9 +21,16 @@ const settings = {
   timer: 120
 };
 
-let round = null;   // { word, hint, packName, impostorIdx:Set, order:[], startIdx }
+let round = null;   // { word, hint, packName, impostorIdx:Set, startIdx }
 let dealIdx = 0;    // jugador que está mirando su carta
 let timer = { left: 0, id: null, running: false };
+
+/* Estado de la carta del jugador actual:
+   'down'  boca abajo, se puede girar
+   'up'    girada, mostrando el resultado
+   'done'  vuelta a tapar y bloqueada: no se puede volver a mirar */
+let cardState = 'down';
+const FLIP_MS = 650;
 
 /* ── Utilidades ────────────────────────────────────────── */
 const randInt = (n) => Math.floor(Math.random() * n);
@@ -209,16 +216,40 @@ function renderDeal() {
 
   $('#deal-name').textContent = playerName(dealIdx);
   $('#deal-pass').textContent = dealIdx === 0 ? 'Empieza mirando…' : 'Pásale el móvil a…';
-  $('#reveal-card').classList.remove('flipped');
+
+  const card = $('#reveal-card');
+  card.classList.remove('flipped', 'done', 'spinning', 'nudge');
+  $('#reveal-back').innerHTML = '';
+  cardState = 'down';
   $('#btn-deal-next').hidden = true;
-  $('#btn-deal-next').textContent =
-    dealIdx === settings.playerCount - 1 ? '¡Listos! Empezar debate ▸' : 'Ocultar y pasar ▸';
 }
 
-function flipCard() {
-  const card = $('#reveal-card');
-  if (card.classList.contains('flipped')) return;
+/* Anima el giro y bloquea los toques mientras dura */
+function spin(card) {
+  card.classList.remove('spinning');
+  void card.offsetWidth;          // reinicia la animación
+  card.classList.add('spinning');
+  setTimeout(() => card.classList.remove('spinning'), FLIP_MS);
+  if (navigator.vibrate) navigator.vibrate(15);
+}
 
+/* Un toque en la carta: girar → tapar → bloqueada */
+function onCardClick() {
+  if (cardState === 'down') revealCard();
+  else if (cardState === 'up') coverCard();
+  else nudgeCard();
+}
+
+function nudgeCard() {
+  const card = $('#reveal-card');
+  card.classList.remove('nudge');
+  void card.offsetWidth;
+  card.classList.add('nudge');
+  setTimeout(() => card.classList.remove('nudge'), 400);
+}
+
+function revealCard() {
+  const card = $('#reveal-card');
   const isImpostor = round.impostorIdx.has(dealIdx);
   const back = $('#reveal-back');
 
@@ -246,8 +277,32 @@ function flipCard() {
       <div class="face-note">Di una palabra relacionada, sin ser obvio.</div>`;
   }
 
+  cardState = 'up';
   card.classList.add('flipped');
-  $('#btn-deal-next').hidden = false;
+  spin(card);
+
+  const btn = $('#btn-deal-next');
+  btn.hidden = false;
+  btn.textContent = 'Girar la carta 🔄';
+}
+
+/* Vuelve a taparla. A partir de aquí ya no se puede mirar otra vez. */
+function coverCard() {
+  const card = $('#reveal-card');
+  cardState = 'done';
+  card.classList.remove('flipped');
+  card.classList.add('done');
+  spin(card);
+
+  // Se borra el contenido cuando la carta ya está de espaldas
+  setTimeout(() => {
+    if (cardState === 'done') $('#reveal-back').innerHTML = '';
+  }, FLIP_MS);
+
+  const btn = $('#btn-deal-next');
+  btn.textContent = dealIdx === settings.playerCount - 1
+    ? '¡Listos! Empezar debate ▸'
+    : `Pasar a ${playerName(dealIdx + 1)} ▸`;
 }
 
 function nextDeal() {
@@ -435,8 +490,12 @@ function bind() {
   });
 
   $('#btn-start').addEventListener('click', startRound);
-  $('#reveal-card').addEventListener('click', flipCard);
-  $('#btn-deal-next').addEventListener('click', nextDeal);
+  $('#reveal-card').addEventListener('click', onCardClick);
+  // El botón hace lo mismo que tocar la carta: primero taparla, luego pasar
+  $('#btn-deal-next').addEventListener('click', () => {
+    if (cardState === 'up') coverCard();
+    else if (cardState === 'done') nextDeal();
+  });
   $('#btn-no-vote').addEventListener('click', () => showResult(null));
   $('#btn-again').addEventListener('click', startRound);
 

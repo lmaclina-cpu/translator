@@ -118,15 +118,24 @@
       <h2 class="deal-name" id="deal-name">Jugador 1</h2>
 
       <div class="reveal-card" id="reveal-card">
-        <div class="face front">
-          <div class="tap-emoji">👆</div>
-          <p>Toca para ver tu palabra</p>
-          <small>¡Que nadie mire! 🤫</small>
+        <div class="card-inner">
+          <div class="face front">
+            <div class="front-idle">
+              <div class="tap-emoji">👆</div>
+              <p>Toca para girar la carta</p>
+              <small>¡Que nadie mire! 🤫</small>
+            </div>
+            <div class="front-done">
+              <div class="tap-emoji">🔒</div>
+              <p>¡Ya la has visto!</p>
+              <small>No se puede mirar otra vez</small>
+            </div>
+          </div>
+          <div class="face back" id="reveal-back"></div>
         </div>
-        <div class="face back" id="reveal-back"></div>
       </div>
 
-      <button class="btn btn-go" id="btn-deal-next" hidden>Tapar y pasar ▸</button>
+      <button class="btn btn-go" id="btn-deal-next" hidden></button>
     </div>
   </section>
 

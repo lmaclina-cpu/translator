@@ -133,6 +133,8 @@ p { margin: 0 0 10px; }
   font-weight: 700;
 }
 .btn:disabled { opacity: .45; cursor: not-allowed; }
+/* `display:block` de arriba gana al [hidden] del navegador: hay que repetirlo */
+.btn[hidden] { display: none; }
 
 /* ── Stepper de jugadores ── */
 .stepper { display: flex; align-items: center; gap: 6px; }
@@ -266,9 +268,32 @@ p { margin: 0 0 10px; }
   width: 100%;
   height: 340px;
   margin-bottom: 20px;
-  perspective: 1200px;
+  perspective: 1400px;
   cursor: pointer;
 }
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform .65s cubic-bezier(.3,.9,.25,1.05);
+}
+.reveal-card.flipped .card-inner { transform: rotateY(180deg); }
+
+/* Pequeño impulso: la carta se levanta mientras gira */
+.reveal-card.spinning .card-inner { animation: lift .65s ease-in-out; }
+@keyframes lift {
+  0%, 100% { scale: 1; }
+  50% { scale: 1.06; }
+}
+/* Ya girada y bloqueada: al tocarla, un meneo que dice "no" */
+.reveal-card.nudge .card-inner { animation: nope .4s ease; }
+@keyframes nope {
+  0%, 100% { translate: 0; }
+  25% { translate: -7px; }
+  75% { translate: 7px; }
+}
+
 .face {
   position: absolute;
   inset: 0;
@@ -280,25 +305,38 @@ p { margin: 0 0 10px; }
   gap: 6px;
   padding: 24px;
   backface-visibility: hidden;
-  transition: transform .5s cubic-bezier(.4,.1,.2,1);
+  -webkit-backface-visibility: hidden;
   border: 1px solid var(--card-brd);
-}
-.face.front {
-  background: linear-gradient(150deg, #241a52, #17123a);
   box-shadow: 0 18px 44px -20px #000;
 }
+.face.front { background: linear-gradient(150deg, #241a52, #17123a); }
 .face.front p { font-weight: 800; font-size: 1.05rem; margin: 0; }
 .face.front small { color: var(--txt-dim); }
+.front-idle, .front-done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.front-done, .reveal-card.done .front-idle { display: none; }
+.reveal-card.done .front-done { display: flex; }
+.reveal-card.done { cursor: default; }
+.reveal-card.done .face.front { background: linear-gradient(150deg, #1b1836, #14122c); }
 .tap-emoji { font-size: 2.6rem; animation: bob 1.5s ease-in-out infinite; }
+.reveal-card.done .tap-emoji { animation: none; opacity: .8; }
 @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
 .face.back {
   transform: rotateY(180deg);
   background: linear-gradient(150deg, #1d1746, #251145);
-  box-shadow: 0 18px 44px -20px #000;
 }
-.reveal-card.flipped .face.front { transform: rotateY(180deg); }
-.reveal-card.flipped .face.back { transform: rotateY(360deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .card-inner { transition-duration: .01ms; }
+  .reveal-card.spinning .card-inner,
+  .reveal-card.nudge .card-inner,
+  .tap-emoji { animation: none; }
+}
 
 .role-tag { font-size: .8rem; letter-spacing: 2px; font-weight: 900; color: var(--txt-dim); text-transform: uppercase; }
 .secret-word { font-size: 2.05rem; font-weight: 900; margin: 6px 0; word-break: break-word; }
