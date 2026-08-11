@@ -453,6 +453,77 @@ p { margin: 0 0 10px; }
   margin: 12px 0 0; font-size: .8rem; color: var(--gold);
   border-top: 1px solid #4b403a; padding-top: 10px;
 }
+/* ── Registrar lo que decide cada rol ── */
+#step-input:not(:empty) { margin: -4px 0 14px; }
+.pick-label {
+  font-family: var(--f-ui); text-transform: uppercase; letter-spacing: .14em;
+  font-size: .66rem; color: var(--tan); margin: 12px 0 8px; text-align: center;
+}
+.pick-grid, .opt-row { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; }
+.pick-chip {
+  border: 1px solid #55483f;
+  background: #322b28;
+  color: var(--bone);
+  padding: 9px 14px;
+  border-radius: 3px;
+  font-family: var(--f-body);
+  font-size: .9rem;
+  cursor: pointer;
+}
+.pick-chip.on {
+  background: var(--rust); border-color: #5e2415; color: #fff5e8;
+  box-shadow: inset 0 1px 0 #ffffff2e;
+}
+.pick-chip.wide { width: 100%; text-align: left; }
+.pick-note { font-size: .78rem; color: var(--dim); text-align: center; margin: 8px 0 0; }
+
+.answer {
+  border: 1px solid #55483f;
+  background: #2f2926;
+  border-left: 3px solid var(--tan);
+  border-radius: 4px;
+  padding: 10px 12px;
+  margin: 10px 0 0;
+  font-size: .92rem;
+}
+.answer small { display: block; color: var(--dim); font-size: .76rem; margin-top: 3px; }
+.answer.ok { border-left-color: #7fa06a; }
+.answer.bad { border-left-color: var(--rust); }
+.witch-block { margin-top: 10px; }
+
+.dawn-box {
+  border: 1px solid #55483f;
+  background: #2b2523;
+  border-radius: 4px;
+  padding: 12px;
+  margin-top: 10px;
+}
+.death-row {
+  display: flex; align-items: baseline; gap: 8px;
+  padding: 8px 10px; margin-bottom: 6px;
+  background: #3a2420;
+  border-left: 3px solid var(--rust);
+  border-radius: 3px;
+  font-size: .95rem;
+}
+.death-row span { margin-left: auto; font-size: .76rem; color: var(--dim); text-align: right; }
+
+.p-row.picked { border-left-color: var(--gold); background: #3a322a; }
+.p-marks { font-size: .82rem; }
+
+/* ── Registro de la partida ── */
+.log-entry {
+  border-left: 2px solid #55483f;
+  padding: 2px 0 8px 12px;
+  margin-bottom: 10px;
+}
+.log-entry b {
+  display: block;
+  font-family: var(--f-ui); text-transform: uppercase; letter-spacing: .12em;
+  font-size: .66rem; color: var(--tan); margin-bottom: 4px;
+}
+.log-entry span { display: block; font-size: .89rem; color: #ddcfb6; }
+
 .step-nav { display: flex; gap: 8px; }
 .step-nav .btn { margin-bottom: 6px; }
 .step-nav .btn-ghost { flex: 0 0 34%; }

@@ -158,6 +158,7 @@
         <p class="step-text" id="step-text"></p>
         <p class="step-note" id="step-note" hidden></p>
       </div>
+      <div id="step-input"></div>
       <div class="step-nav">
         <button class="btn btn-ghost" id="btn-step-prev">◂ Atrás</button>
         <button class="btn btn-main" id="btn-step-next">Siguiente ▸</button>
@@ -183,9 +184,10 @@
       </div>
 
       <div class="card">
-        <h3>Linchamiento</h3>
-        <p class="hint">Pulsa a quien el pueblo haya votado. Se marcará como muerto.</p>
+        <h3>Votación del pueblo</h3>
+        <p class="hint" id="lynch-hint">Pulsa a quien el pueblo haya votado.</p>
         <div class="alive-list" id="lynch-list"></div>
+        <div id="lynch-result"></div>
       </div>
 
       <button class="btn btn-main" id="btn-new-night">CAE LA NOCHE ▸</button>
@@ -207,6 +209,11 @@
 
       <div class="counters" id="counters"></div>
       <div class="player-list" id="player-list"></div>
+
+      <div class="card" id="log-card">
+        <h3>📜 Registro de la partida</h3>
+        <div id="log-list"></div>
+      </div>
 
       <button class="btn btn-ghost" id="btn-restart">Nueva partida</button>
       <div class="spacer"></div>
