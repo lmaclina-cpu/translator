@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#221f1e" />
+<title>Hombres Lobo 🐺 — narrador de partidas</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐺</text></svg>" />
+</head>
+<body>
+
+<!-- Marca de la casa: cabeza de lobo, al estilo grabado de la caja -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="wolf" viewBox="0 0 240 200">
+    <path d="M10 106 L70 88 L90 74 L74 6 L122 58 L152 56 L194 10 L204 76
+             L224 108 L216 146 L192 178 L134 182 L92 154 L44 130 Z"/>
+    <circle class="wolf-eye" cx="124" cy="98" r="12" />
+  </symbol>
+</svg>
+
+<div id="app">
+
+  <!-- ══════════ INICIO ══════════ -->
+  <section class="screen active" id="screen-home">
+    <div class="plaque">
+      <p class="kicker">Un juego de pueblo</p>
+      <h1 class="title">Hombres<br>lobo</h1>
+      <p class="subtitle">de Castronegro</p>
+    </div>
+
+    <div class="wolf-mark">
+      <svg class="wolf-svg"><use href="#wolf"></use></svg>
+    </div>
+
+    <div class="card">
+      <h3>El narrador lo lleva todo</h3>
+      <p class="body">
+        Esta app hace de <b>guía del narrador</b>: reparte las cartas en secreto,
+        canta el orden de la noche con solo los roles que estén en juego, y lleva
+        la cuenta de vivos y muertos.
+      </p>
+      <p class="body dim">
+        Hace falta una persona que narre y no juegue. El resto pasa el móvil para
+        ver su carta.
+      </p>
+    </div>
+
+    <button class="btn btn-main" data-go="setup">EMPEZAR PARTIDA</button>
+    <p class="mini-note">De 6 a 20 jugadores · 22 roles configurables</p>
+  </section>
+
+  <!-- ══════════ JUGADORES ══════════ -->
+  <section class="screen" id="screen-setup">
+    <header class="topbar">
+      <button class="icon-btn" data-go="home" aria-label="Volver">←</button>
+      <h2>Los aldeanos</h2>
+    </header>
+
+    <div class="card">
+      <div class="row-between">
+        <div>
+          <h3>¿Cuántos jugáis?</h3>
+          <p class="hint">Sin contar al narrador</p>
+        </div>
+        <div class="stepper">
+          <button class="step-btn" id="players-minus" aria-label="Menos jugadores">−</button>
+          <span class="step-value" id="players-count">8</span>
+          <button class="step-btn" id="players-plus" aria-label="Más jugadores">+</button>
+        </div>
+      </div>
+      <div class="names" id="names-list"></div>
+    </div>
+
+    <button class="btn btn-main" data-go="roles">ELEGIR LOS ROLES ▸</button>
+    <div class="spacer"></div>
+  </section>
+
+  <!-- ══════════ ROLES ══════════ -->
+  <section class="screen" id="screen-roles">
+    <header class="topbar">
+      <button class="icon-btn" data-go="setup" aria-label="Volver">←</button>
+      <h2>El reparto</h2>
+    </header>
+
+    <p class="hint">
+      Ajusta cuántos hay de cada rol. Las plazas que sobren se rellenan con
+      aldeanos sin poderes.
+    </p>
+
+    <div class="quick-row">
+      <button class="chip" id="btn-preset">Reparto recomendado</button>
+      <button class="chip" id="btn-clear">Vaciar todo</button>
+    </div>
+
+    <div id="roles-groups"></div>
+    <div class="spacer big"></div>
+
+    <div class="tally-bar" id="tally-bar">
+      <div class="tally-nums">
+        <span><b id="tally-assigned">0</b>/<span id="tally-total">8</span> cartas</span>
+        <span class="tally-sep">·</span>
+        <span class="t-wolf">🐺 <b id="tally-wolves">0</b></span>
+        <span class="tally-sep">·</span>
+        <span class="t-town">🏡 <b id="tally-town">0</b></span>
+      </div>
+      <p class="tally-msg" id="tally-msg"></p>
+      <button class="btn btn-main tally-btn" id="btn-deal">REPARTIR CARTAS</button>
+    </div>
+  </section>
+
+  <!-- ══════════ REPARTO DE CARTAS ══════════ -->
+  <section class="screen" id="screen-deal">
+    <div class="deal-progress" id="deal-progress"></div>
+
+    <div class="deal-wrap">
+      <p class="pass-note" id="deal-pass">Pásale el móvil a…</p>
+      <h2 class="deal-name" id="deal-name">Jugador 1</h2>
+
+      <div class="reveal-card" id="reveal-card">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="front-idle">
+              <svg class="wolf-svg small"><use href="#wolf"></use></svg>
+              <p>Toca para girar la carta</p>
+              <small>Que nadie más mire</small>
+            </div>
+            <div class="front-done">
+              <div class="done-mark">✕</div>
+              <p>Carta vista</p>
+              <small>Ya no se puede volver a mirar</small>
+            </div>
+          </div>
+          <div class="face back" id="reveal-back"></div>
+        </div>
+      </div>
+
+      <button class="btn btn-main" id="btn-deal-next" hidden></button>
+    </div>
+  </section>
+
+  <!-- ══════════ MESA / NARRADOR ══════════ -->
+  <section class="screen" id="screen-table">
+    <div class="tabs">
+      <button class="tab on" data-tab="night">🌑 Noche</button>
+      <button class="tab" data-tab="day">☀️ Día</button>
+      <button class="tab" data-tab="players">👥 Mesa</button>
+    </div>
+
+    <div class="win-banner" id="win-banner" hidden></div>
+
+    <!-- Noche -->
+    <div class="tab-panel on" id="panel-night">
+      <p class="phase-label">Noche <span id="night-num">1</span></p>
+      <div class="card step-card">
+        <div class="step-emoji" id="step-emoji">🌑</div>
+        <h2 class="step-title" id="step-title">Cae la noche</h2>
+        <p class="step-text" id="step-text"></p>
+        <p class="step-note" id="step-note" hidden></p>
+      </div>
+      <div class="step-nav">
+        <button class="btn btn-ghost" id="btn-step-prev">◂ Atrás</button>
+        <button class="btn btn-main" id="btn-step-next">Siguiente ▸</button>
+      </div>
+      <p class="step-count" id="step-count"></p>
+    </div>
+
+    <!-- Día -->
+    <div class="tab-panel" id="panel-day">
+      <p class="phase-label">Día <span id="day-num">1</span></p>
+      <div class="card timer-card" id="timer-card">
+        <div class="timer" id="timer-display">--:--</div>
+        <div class="timer-actions">
+          <button class="btn btn-ghost sm" id="btn-timer-toggle">Pausar</button>
+          <button class="btn btn-ghost sm" id="btn-timer-reset">Reiniciar</button>
+        </div>
+        <div class="chips" id="timer-chips">
+          <button class="chip sm" data-timer="0">Sin reloj</button>
+          <button class="chip sm" data-timer="120">2 min</button>
+          <button class="chip sm" data-timer="180">3 min</button>
+          <button class="chip sm" data-timer="300">5 min</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Linchamiento</h3>
+        <p class="hint">Pulsa a quien el pueblo haya votado. Se marcará como muerto.</p>
+        <div class="alive-list" id="lynch-list"></div>
+      </div>
+
+      <button class="btn btn-main" id="btn-new-night">CAE LA NOCHE ▸</button>
+      <div class="spacer"></div>
+    </div>
+
+    <!-- Mesa -->
+    <div class="tab-panel" id="panel-players">
+      <div class="card">
+        <label class="switch-row">
+          <span>
+            <b>Ver los roles</b>
+            <small>Solo el narrador. Tápalo si pasas el móvil.</small>
+          </span>
+          <input type="checkbox" id="opt-show-roles" class="switch" checked />
+          <span class="slider" aria-hidden="true"></span>
+        </label>
+      </div>
+
+      <div class="counters" id="counters"></div>
+      <div class="player-list" id="player-list"></div>
+
+      <button class="btn btn-ghost" id="btn-restart">Nueva partida</button>
+      <div class="spacer"></div>
+    </div>
+  </section>
+
+</div>
+
+<script src="roles.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

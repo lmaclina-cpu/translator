@@ -10,11 +10,16 @@ Sin instalación, sin registro y **sin internet**: son archivos estáticos.
 | | Versión | Para quién | Dónde |
 |---|---|---|---|
 | 🕵️ | **El Impostor** | Adultos. Incluye categoría picante (+18). | `/` → [lmaclina-cpu.github.io/translator/](https://lmaclina-cpu.github.io/translator/) |
-| 🦖 | **El Impostor Peques** | Niños desde 8-10 años y familias. Sin contenido adulto. | `/peques/` → [lmaclina-cpu.github.io/translator/peques/](https://lmaclina-cpu.github.io/translator/peques/) |
+| 🦖 | **El Impostor Peques** | Niños desde 8-10 años y familias. Sin contenido adulto. | `/peques/` → [.../peques/](https://lmaclina-cpu.github.io/translator/peques/) |
+| 🐺 | **Hombres Lobo** | Grupos de 6 a 20 con un narrador. Otro juego distinto. | `/lobo/` → [.../lobo/](https://lmaclina-cpu.github.io/translator/lobo/) |
 
-Son **apps independientes**: cada una con sus propias palabras, su propio aspecto
-(oscura de neón la de adultos, clara tipo pegatinas la de peques) y sus propios
-ajustes guardados. Tocar una no afecta a la otra.
+Son **apps independientes**: cada una con su propio aspecto (oscura de neón la de
+adultos, clara tipo pegatinas la de peques, pizarra y rojo teja la de lobos) y
+sus propios ajustes guardados. Tocar una no afecta a las demás.
+
+La de Hombres Lobo no es una variante del impostor: reparte los 22 roles del
+juego de mesa, guía al narrador por el orden de la noche mostrando solo los
+roles en juego, y lleva el registro de vivos y muertos.
 
 El resto de este README describe la versión de adultos; la de peques funciona
 exactamente igual y su banco de palabras está en `peques/words.js`.
@@ -84,6 +89,12 @@ peques/           Versión infantil, independiente
   styles.css      Estilos: tema claro tipo pegatinas
   app.js          Misma lógica, con su propio guardado
   words.js        400 palabras aptas para niños
+
+lobo/             Hombres Lobo, juego distinto
+  index.html      Portada, jugadores, roles, reparto y mesa
+  styles.css      Estilos: pizarra, rojo teja y grano de imprenta
+  app.js          Reparto, guía de la noche, día y control de muertos
+  roles.js        Los 22 roles con sus reglas y su turno de noche
 ```
 
 ## Publicarlo

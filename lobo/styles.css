@@ -1,0 +1,543 @@
+/* ══════════════════════════════════════════════════════════
+   HOMBRES LOBO — estética de la caja del juego de mesa:
+   pizarra oscura, rojo teja, papel hueso y grano de imprenta.
+   ══════════════════════════════════════════════════════════ */
+
+:root {
+  --ink: #161312;
+  --slate: #2b2725;
+  --slate-2: #37312e;
+  --rust: #b8442a;
+  --rust-lo: #8c3220;
+  --rust-hi: #d15836;
+  --blood: #6d1b13;
+  --bone: #f0e3ca;
+  --bone-2: #e2d2b4;
+  --dim: #a1917a;
+  --tan: #cfa16a;
+  --gold: #d8b45f;
+  --f-display: "Bookman Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+  --f-body: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  --f-ui: "Helvetica Neue", Arial, system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body { margin: 0; padding: 0; min-height: 100%; }
+
+body {
+  background:
+    radial-gradient(680px 420px at 50% -6%, #4a3b34 0%, transparent 68%),
+    radial-gradient(520px 520px at 92% 108%, #5c2a1c 0%, transparent 62%),
+    var(--ink);
+  background-attachment: fixed;
+  color: var(--bone);
+  font-family: var(--f-body);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* Grano de imprenta sobre todo el fondo */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: .16;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
+#app {
+  position: relative;
+  z-index: 2;
+  max-width: 540px;
+  margin: 0 auto;
+  padding: 20px 18px calc(28px + env(safe-area-inset-bottom));
+}
+
+/* ── Pantallas ── */
+.screen { display: none; animation: fade .3s ease both; }
+.screen.active { display: block; }
+@keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+h1, h2, h3 { margin: 0 0 8px; line-height: 1.12; font-family: var(--f-display); font-weight: 700; }
+p { margin: 0 0 10px; }
+
+.hint { color: var(--dim); font-size: .88rem; margin: 0 0 12px; }
+.body { font-size: .95rem; }
+.body.dim { color: var(--dim); }
+.mini-note {
+  text-align: center; color: var(--dim); font-size: .74rem; margin-top: 14px;
+  font-family: var(--f-ui); letter-spacing: .06em; text-transform: uppercase;
+}
+.spacer { height: 24px; }
+.spacer.big { height: 190px; }
+
+.kicker, .phase-label, .role-team, .step-count {
+  font-family: var(--f-ui);
+  text-transform: uppercase;
+  letter-spacing: .18em;
+  font-size: .68rem;
+  color: var(--tan);
+  margin: 0;
+}
+
+/* ── Cartel de portada, como la tapa de la caja ── */
+.plaque {
+  background: linear-gradient(178deg, var(--slate-2), var(--slate));
+  border: 1px solid #55483f;
+  border-radius: 4px;
+  padding: 20px 20px 22px;
+  text-align: center;
+  box-shadow: inset 0 0 0 4px #241f1d, 0 16px 40px -18px #000;
+}
+.plaque .title {
+  font-size: 3.1rem;
+  letter-spacing: -.5px;
+  margin: 6px 0 2px;
+  color: var(--bone);
+  text-shadow: 2px 2px 0 #1a1514;
+}
+.plaque .subtitle {
+  font-family: var(--f-display);
+  font-size: 1.25rem;
+  color: var(--tan);
+  margin: 0;
+  font-style: italic;
+}
+
+/* ── Cabeza de lobo ── */
+.wolf-mark { text-align: center; margin: 18px 0 22px; }
+.wolf-svg {
+  width: 148px; height: 130px;
+  fill: var(--rust);
+  filter: drop-shadow(0 10px 24px #00000080);
+}
+.wolf-svg.small { width: 96px; height: 80px; fill: var(--rust); filter: none; }
+/* El ojo es un anillo: círculo sin relleno con trazo grueso del color del fondo */
+.wolf-eye { fill: none; stroke: var(--ink); stroke-width: 8; }
+
+/* ── Fichas de papel ── */
+.card {
+  background: linear-gradient(178deg, #322c29, #292422);
+  border: 1px solid #4b403a;
+  border-radius: 5px;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 10px 26px -18px #000;
+}
+.card h3 { font-size: 1.1rem; color: var(--bone); }
+.row-between { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+
+/* ── Barra superior ── */
+.topbar { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.topbar h2 { font-size: 1.5rem; margin: 0; color: var(--bone); }
+.icon-btn {
+  background: #372f2c;
+  border: 1px solid #55483f;
+  color: var(--bone);
+  width: 42px; height: 42px;
+  border-radius: 4px;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/* ── Botones ── */
+.btn {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-radius: 4px;
+  padding: 15px 18px;
+  font-family: var(--f-ui);
+  font-size: .92rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: filter .12s, transform .1s;
+}
+.btn:active { transform: translateY(1px); filter: brightness(1.12); }
+.btn-main {
+  background: linear-gradient(178deg, var(--rust-hi), var(--rust-lo));
+  color: #fff5e8;
+  border: 1px solid #5e2415;
+  box-shadow: inset 0 1px 0 #ffffff33, 0 10px 24px -14px #000;
+}
+.btn-ghost {
+  background: #362f2c;
+  border: 1px solid #55483f;
+  color: var(--bone);
+}
+.btn.sm { padding: 10px 12px; font-size: .76rem; margin-bottom: 0; }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn[hidden] { display: none; }
+
+/* ── Contador de jugadores ── */
+.stepper { display: flex; align-items: center; gap: 8px; }
+.step-btn {
+  width: 42px; height: 42px;
+  border-radius: 4px;
+  border: 1px solid #55483f;
+  background: #3a322e;
+  color: var(--bone);
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+.step-btn:disabled { opacity: .3; }
+.step-value {
+  min-width: 44px; text-align: center;
+  font-family: var(--f-display); font-size: 1.8rem; font-weight: 700;
+}
+
+/* ── Nombres ── */
+.names { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+.names input {
+  width: 100%;
+  background: #221d1b;
+  border: 1px solid #4b403a;
+  border-radius: 3px;
+  padding: 10px 11px;
+  color: var(--bone);
+  font-family: var(--f-body);
+  font-size: .93rem;
+  min-width: 0;
+}
+.names input:focus { outline: 2px solid var(--rust); outline-offset: 0; }
+.names input::placeholder { color: #74655a; }
+
+/* ── Chips ── */
+.chips, .quick-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.chips { margin: 10px 0 0; }
+.chip {
+  border: 1px solid #55483f;
+  background: #362f2c;
+  color: var(--bone);
+  padding: 9px 15px;
+  border-radius: 3px;
+  font-family: var(--f-ui);
+  font-size: .78rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.chip.sm { padding: 7px 12px; font-size: .7rem; }
+.chip.on { background: var(--rust); border-color: #5e2415; color: #fff5e8; }
+
+/* ── Grupos de roles ── */
+.group-head {
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 8px;
+  margin: 20px 0 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #4b403a;
+}
+.group-head h3 { white-space: nowrap; }
+.group-head h3 { margin: 0; font-size: 1.15rem; }
+.group-head span { font-family: var(--f-ui); font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+
+.role-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 12px;
+  border: 1px solid #453b36;
+  border-left: 3px solid #453b36;
+  border-radius: 4px;
+  background: #2c2624;
+  margin-bottom: 7px;
+}
+.role-row.active { background: #392e28; border-left-color: var(--rust); }
+.role-row.wolf.active { border-left-color: var(--rust); }
+.role-row.solo.active { border-left-color: var(--gold); }
+.role-row.amb.active { border-left-color: var(--tan); }
+.role-row.town.active { border-left-color: #7fa06a; }
+.role-emoji { font-size: 1.4rem; flex: 0 0 auto; }
+.role-info { flex: 1; min-width: 0; }
+.role-info b { display: block; font-size: .97rem; font-family: var(--f-display); }
+.role-info small { display: block; color: var(--dim); font-size: .79rem; }
+.role-note { color: var(--gold); font-size: .75rem; margin-top: 3px; display: block; }
+.role-count {
+  display: flex; align-items: center; gap: 6px; flex: 0 0 auto;
+}
+.role-count button {
+  width: 32px; height: 32px;
+  border-radius: 3px;
+  border: 1px solid #55483f;
+  background: #3a322e;
+  color: var(--bone);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+.role-count button:disabled { opacity: .25; }
+.role-count b {
+  min-width: 20px; text-align: center;
+  font-family: var(--f-display); font-size: 1.1rem;
+}
+.role-count b.zero { color: #6b5c52; }
+
+/* ── Barra de recuento, pegada abajo ── */
+.tally-bar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 5;
+  background: linear-gradient(180deg, #241f1de0, #1a1615fa 40%);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid #4b403a;
+  padding: 12px 18px calc(14px + env(safe-area-inset-bottom));
+}
+.tally-bar > * { max-width: 504px; margin-left: auto; margin-right: auto; }
+.tally-nums {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--f-ui); font-size: .82rem; letter-spacing: .04em;
+}
+.tally-nums b { font-family: var(--f-display); font-size: 1.05rem; }
+.tally-sep { color: #5b4d45; }
+.t-wolf { color: var(--rust-hi); }
+.t-town { color: #93b47c; }
+.tally-msg {
+  text-align: center; font-size: .8rem; margin: 4px 0 8px; min-height: 1.2em;
+  color: var(--gold);
+}
+.tally-msg.bad { color: #ea7a63; }
+.tally-btn { margin-bottom: 0; }
+
+/* ── Reparto de cartas ── */
+.deal-progress { display: flex; gap: 4px; margin-bottom: 20px; }
+.dot { flex: 1; height: 4px; border-radius: 0; background: #40383300; border-bottom: 3px solid #443b36; }
+.dot.done { border-bottom-color: var(--rust); }
+.dot.now { border-bottom-color: var(--gold); }
+
+.deal-wrap { text-align: center; }
+.pass-note { color: var(--dim); font-size: .88rem; margin: 0; }
+.deal-name { font-size: 2rem; margin: 2px 0 18px; color: var(--bone); }
+
+.reveal-card {
+  position: relative;
+  width: 100%;
+  height: 384px;
+  margin-bottom: 18px;
+  perspective: 1500px;
+  cursor: pointer;
+}
+.card-inner {
+  position: relative; width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transition: transform .65s cubic-bezier(.3,.9,.25,1.05);
+}
+.reveal-card.flipped .card-inner { transform: rotateY(180deg); }
+.reveal-card.spinning .card-inner { animation: lift .65s ease-in-out; }
+@keyframes lift { 0%,100% { scale: 1; } 50% { scale: 1.05; } }
+.reveal-card.nudge .card-inner { animation: nope .4s ease; }
+@keyframes nope { 0%,100% { translate: 0; } 25% { translate: -7px; } 75% { translate: 7px; } }
+
+.face {
+  position: absolute; inset: 0;
+  border-radius: 6px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px; padding: 26px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  box-shadow: 0 20px 46px -22px #000;
+}
+/* Dorso: pizarra con el lobo grabado */
+.face.front {
+  background:
+    radial-gradient(420px 300px at 50% 32%, #3d3430, #262120 72%);
+  border: 1px solid #574a42;
+  box-shadow: inset 0 0 0 5px #221d1c, 0 20px 46px -22px #000;
+  color: var(--bone);
+}
+.face.front p { font-family: var(--f-display); font-size: 1.05rem; margin: 8px 0 0; }
+.face.front small {
+  color: var(--dim); font-family: var(--f-ui); font-size: .7rem;
+  letter-spacing: .12em; text-transform: uppercase;
+}
+.front-idle, .front-done { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.front-done, .reveal-card.done .front-idle { display: none; }
+.reveal-card.done .front-done { display: flex; }
+.reveal-card.done { cursor: default; }
+.done-mark {
+  font-size: 2.6rem; color: var(--rust); font-family: var(--f-display);
+  border: 3px solid var(--rust); border-radius: 50%;
+  width: 74px; height: 74px; display: grid; place-items: center;
+  opacity: .85;
+}
+.wolf-svg.small { animation: none; }
+
+/* Cara: la carta de rol, en papel hueso */
+.face.back {
+  transform: rotateY(180deg);
+  background: linear-gradient(172deg, var(--bone), var(--bone-2));
+  border: 1px solid #8b7959;
+  color: #221c17;
+  justify-content: flex-start;
+  padding: 0;
+  overflow: hidden;
+}
+.role-card-band {
+  width: 100%;
+  padding: 9px 16px;
+  background: var(--slate);
+  color: var(--bone);
+  font-family: var(--f-ui);
+  font-size: .68rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  text-align: center;
+  flex: 0 0 auto;
+}
+.role-card-band.wolf { background: var(--blood); }
+.role-card-band.solo { background: #6b5320; }
+.role-card-band.amb  { background: #4d4030; }
+.role-card-band.town { background: #35472c; }
+.role-card-body {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 18px 22px 24px;
+  text-align: center;
+  gap: 6px;
+}
+.role-card-emoji { font-size: 3.1rem; line-height: 1; }
+.role-card-name {
+  font-family: var(--f-display); font-size: 1.7rem; font-weight: 700;
+  margin: 4px 0 2px; color: #1d1712; line-height: 1.08;
+}
+.role-card-desc { font-size: .92rem; color: #3a3028; margin: 6px 0 0; }
+.role-card-rule {
+  width: 46px; height: 2px; background: #a3906d; margin: 8px 0 2px;
+}
+.role-card-note {
+  font-family: var(--f-ui); font-size: .68rem; letter-spacing: .1em;
+  text-transform: uppercase; color: #7a6a4e; margin-top: 8px;
+}
+
+/* ── Mesa: pestañas ── */
+.tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.tab {
+  flex: 1;
+  background: #2c2624;
+  border: 1px solid #453b36;
+  border-radius: 3px;
+  color: var(--dim);
+  padding: 10px 4px;
+  font-family: var(--f-ui);
+  font-size: .74rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.tab.on { background: var(--rust); border-color: #5e2415; color: #fff5e8; }
+.tab-panel { display: none; }
+.tab-panel.on { display: block; }
+
+.win-banner {
+  background: linear-gradient(178deg, #6b5320, #4a3915);
+  border: 1px solid var(--gold);
+  border-radius: 4px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  text-align: center;
+  font-family: var(--f-display);
+  font-size: 1.05rem;
+  color: #ffeec2;
+}
+
+/* ── Paso de la noche ── */
+.phase-label { text-align: center; margin-bottom: 10px; }
+.step-card { text-align: center; padding: 24px 20px; min-height: 232px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.step-emoji { font-size: 2.8rem; }
+.step-title { font-size: 1.7rem; margin: 8px 0 10px; color: var(--bone); }
+.step-text { font-size: 1.02rem; margin: 0; color: #e7d9c0; }
+.step-note {
+  margin: 12px 0 0; font-size: .8rem; color: var(--gold);
+  border-top: 1px solid #4b403a; padding-top: 10px;
+}
+.step-nav { display: flex; gap: 8px; }
+.step-nav .btn { margin-bottom: 6px; }
+.step-nav .btn-ghost { flex: 0 0 34%; }
+.step-nav .btn-main { flex: 1; }
+.step-count { text-align: center; }
+
+/* ── Reloj ── */
+.timer-card { text-align: center; }
+.timer { font-family: var(--f-display); font-size: 3.2rem; font-variant-numeric: tabular-nums; }
+.timer.low { color: var(--rust-hi); animation: pulse .9s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .45; } }
+.timer-actions { display: flex; gap: 8px; margin-top: 6px; }
+.timer-actions .btn { flex: 1; }
+.timer-card.hidden .timer, .timer-card.hidden .timer-actions { display: none; }
+
+/* ── Listas de jugadores ── */
+.alive-list, .player-list { display: grid; gap: 7px; margin-top: 10px; }
+.p-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 12px;
+  border: 1px solid #453b36;
+  border-left: 3px solid #6b5c52;
+  border-radius: 4px;
+  background: #2c2624;
+  color: var(--bone);
+  font-family: var(--f-body);
+  font-size: .97rem;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+.p-row .p-name { flex: 1; min-width: 0; }
+.p-row .p-role {
+  font-family: var(--f-ui); font-size: .68rem; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--tan);
+}
+.p-row.wolf { border-left-color: var(--rust); }
+.p-row.solo { border-left-color: var(--gold); }
+.p-row.amb { border-left-color: var(--tan); }
+.p-row.town { border-left-color: #7fa06a; }
+.p-row.dead { opacity: .45; }
+.p-row.dead .p-name { text-decoration: line-through; }
+.p-row .p-state { font-size: 1.05rem; flex: 0 0 auto; }
+
+.counters { display: flex; gap: 8px; margin-bottom: 12px; }
+.counter {
+  flex: 1; text-align: center;
+  border: 1px solid #453b36; border-radius: 4px;
+  background: #2c2624; padding: 10px 6px;
+}
+.counter b { display: block; font-family: var(--f-display); font-size: 1.6rem; }
+.counter span {
+  font-family: var(--f-ui); font-size: .64rem; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--dim);
+}
+.counter.wolf b { color: var(--rust-hi); }
+.counter.town b { color: #93b47c; }
+
+/* ── Interruptor ── */
+.switch-row { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+.switch-row > span:first-child { flex: 1; }
+.switch-row small { display: block; color: var(--dim); font-size: .79rem; margin-top: 2px; }
+.switch { position: absolute; opacity: 0; pointer-events: none; }
+.slider {
+  flex: 0 0 auto; width: 50px; height: 28px;
+  border-radius: 999px; background: #443b36;
+  border: 1px solid #55483f;
+  position: relative; transition: background .2s;
+}
+.slider::after {
+  content: ""; position: absolute; top: 3px; left: 3px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--bone); transition: transform .2s;
+}
+.switch:checked + .slider { background: var(--rust); }
+.switch:checked + .slider::after { transform: translateX(22px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .card-inner { transition-duration: .01ms; }
+  .reveal-card.spinning .card-inner,
+  .reveal-card.nudge .card-inner,
+  .timer.low { animation: none; }
+}
+
+@media (max-width: 370px) {
+  .names { grid-template-columns: 1fr; }
+  .plaque .title { font-size: 2.6rem; }
+}
