@@ -11,7 +11,7 @@ Sin instalación, sin registro y **sin internet**: son archivos estáticos.
 |---|---|---|---|
 | 🕵️ | **El Impostor** | Adultos. Incluye categoría picante (+18). | `/` → [lmaclina-cpu.github.io/translator/](https://lmaclina-cpu.github.io/translator/) |
 | 🦖 | **El Impostor Peques** | Niños desde 8-10 años y familias. Sin contenido adulto. | `/peques/` → [.../peques/](https://lmaclina-cpu.github.io/translator/peques/) |
-| 🐺 | **Hombres Lobo** | Grupos de 6 a 20 con un narrador. Otro juego distinto. | `/lobo/` → [.../lobo/](https://lmaclina-cpu.github.io/translator/lobo/) |
+| 🐺 | **Hombres Lobo** | Grupos de 5 a 20 con un narrador. Otro juego distinto. | `/lobo/` → [.../lobo/](https://lmaclina-cpu.github.io/translator/lobo/) |
 
 Son **apps independientes**: cada una con su propio aspecto (oscura de neón la de
 adultos, clara tipo pegatinas la de peques, pizarra y rojo teja la de lobos) y

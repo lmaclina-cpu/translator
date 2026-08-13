@@ -5,7 +5,7 @@
    muere al amanecer.
    ══════════════════════════════════════════════════════════ */
 
-const MIN_PLAYERS = 6;
+const MIN_PLAYERS = 5;
 const MAX_PLAYERS = 20;
 const STORE_KEY = 'lobo.v1';
 const FLIP_MS = 650;
@@ -209,7 +209,9 @@ function applyPreset() {
   const p = settings.playerCount;
   const wolves = Math.max(1, Math.round(p / 4));
   settings.counts = { lobo: wolves, vidente: 1 };
-  if (p >= 8) settings.counts.bruja = 1;
+  // En mesas pequeñas la bruja es lo que da margen al pueblo: solo hay
+  // dos o tres votaciones antes de que los lobos igualen.
+  settings.counts.bruja = 1;
   if (p >= 9) settings.counts.cazador = 1;
   if (p >= 11) settings.counts.cupido = 1;
   if (p >= 13) settings.counts.salvador = 1;
@@ -247,9 +249,13 @@ function renderTally() {
     msg.classList.add('bad');
     btn.disabled = true;
   } else {
-    msg.textContent = filler > 0
+    const base = filler > 0
       ? `Se rellenará con ${filler} aldeano${filler > 1 ? 's' : ''} sin poderes.`
       : 'Todas las plazas tienen carta especial.';
+    // En mesas de 5 o 6 el segundo lobo se come la partida en dos noches
+    msg.textContent = (total <= 6 && wolves > 1)
+      ? `${base} Con ${total} jugadores, 1 lobo aguanta más partida.`
+      : base;
     btn.disabled = false;
   }
 }
