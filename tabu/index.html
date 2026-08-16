@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#f7f8fa" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0a0b0d" media="(prefers-color-scheme: dark)" />
+<title>Tabú — Explícalo sin decirlo</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230f1115'/><rect x='22' y='44' width='56' height='12' rx='6' fill='%23ffffff'/></svg>" />
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ══════════ INICIO ══════════ -->
+  <section class="screen active" id="screen-home">
+    <div class="hero">
+      <p class="eyebrow">Juego de fiesta · un solo móvil</p>
+      <h1 class="wordmark">Tabú</h1>
+      <p class="tagline">Que tu equipo adivine la palabra sin que digas ninguna de las cinco prohibidas.</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h3>Cómo se juega</h3>
+        <span class="eyebrow">5 pasos</span>
+      </div>
+      <ol class="steps">
+        <li><span>Por turnos, <b>una persona de cada equipo</b> coge el móvil.</span></li>
+        <li><span>Ve una palabra y <b>cinco palabras prohibidas</b> debajo.</span></li>
+        <li><span>Tiene que lograr que su equipo la adivine <b>sin decir ninguna</b>, y sin mímica ni gestos.</span></li>
+        <li><span>Si se le escapa una, el equipo rival canta <b>tabú</b> y se pulsa el botón rojo.</span></li>
+        <li><span>Cuando suena la bocina, le toca al siguiente equipo.</span></li>
+      </ol>
+    </div>
+
+    <button class="btn btn-primary btn-xl" data-go="setup">Jugar</button>
+    <p class="mini-note">Sin registro y sin internet. Un solo móvil para todos.</p>
+  </section>
+
+  <!-- ══════════ CONFIGURACIÓN ══════════ -->
+  <section class="screen" id="screen-setup">
+    <header class="topbar">
+      <button class="icon-btn" data-go="home" aria-label="Volver">←</button>
+      <h2>Configurar partida</h2>
+    </header>
+
+    <div class="panel">
+      <div class="panel-head"><h3>Equipos</h3></div>
+      <div class="panel-body">
+        <div class="setting">
+          <div class="setting-txt">
+            <b>Número de equipos</b>
+            <small>De 2 a 4</small>
+          </div>
+          <div class="stepper">
+            <button class="step-btn" id="teams-minus" aria-label="Menos equipos">−</button>
+            <span class="step-value" id="teams-count">2</span>
+            <button class="step-btn" id="teams-plus" aria-label="Más equipos">+</button>
+          </div>
+        </div>
+        <div class="names" id="names-list"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>Partida</h3></div>
+      <div class="panel-body">
+        <div class="stack">
+          <div class="setting-txt">
+            <b>Tiempo por turno</b>
+            <small>Lo que dura el reloj de cada equipo</small>
+          </div>
+          <div class="chips" id="time-chips">
+            <button class="chip" data-time="45">45 s</button>
+            <button class="chip" data-time="60">1:00</button>
+            <button class="chip" data-time="90">1:30</button>
+            <button class="chip" data-time="120">2:00</button>
+          </div>
+        </div>
+
+        <div class="stack">
+          <div class="setting-txt">
+            <b>Puntos para ganar</b>
+            <small>La ronda se termina siempre: todos juegan los mismos turnos</small>
+          </div>
+          <div class="chips" id="target-chips">
+            <button class="chip" data-target="10">10</button>
+            <button class="chip" data-target="15">15</button>
+            <button class="chip" data-target="20">20</button>
+            <button class="chip" data-target="30">30</button>
+          </div>
+        </div>
+
+        <div class="stack">
+          <div class="setting-txt">
+            <b>Pases por turno</b>
+            <small>Cartas que se pueden saltar sin penalización</small>
+          </div>
+          <div class="chips" id="skip-chips">
+            <button class="chip" data-skip="0">Ninguno</button>
+            <button class="chip" data-skip="1">1</button>
+            <button class="chip" data-skip="3">3</button>
+            <button class="chip" data-skip="-1">Libres</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>Reglas de la casa</h3></div>
+      <div class="panel-body">
+        <label class="switch-row">
+          <span class="setting-txt">
+            <b>Un tabú resta un punto</b>
+            <small>Si se apaga, decir una prohibida solo anula la carta</small>
+          </span>
+          <input type="checkbox" id="opt-penalty" class="switch" checked />
+          <span class="slider" aria-hidden="true"></span>
+        </label>
+        <label class="switch-row">
+          <span class="setting-txt">
+            <b>Sonido</b>
+            <small>Pitidos en los últimos segundos y bocina al acabar</small>
+          </span>
+          <input type="checkbox" id="opt-sound" class="switch" checked />
+          <span class="slider" aria-hidden="true"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h3>Categorías</h3>
+        <span class="eyebrow">Se mezclan</span>
+      </div>
+      <div class="packs" id="packs-list"></div>
+      <p class="deck-size" id="deck-size"></p>
+    </div>
+    <p class="warn" id="packs-warn" hidden>Selecciona al menos una categoría.</p>
+
+    <div class="spacer"></div>
+    <button class="btn btn-primary btn-xl" id="btn-start">Empezar partida</button>
+    <div class="spacer"></div>
+  </section>
+
+  <!-- ══════════ TURNO (pasar el móvil) ══════════ -->
+  <section class="screen" id="screen-turn">
+    <div class="turn-hero">
+      <p class="eyebrow" id="round-tag">Ronda 1</p>
+      <h2 class="turn-team" id="turn-team">Equipo 1</h2>
+      <p class="hint">Coge el móvil quien vaya a explicar. Los demás, a adivinar.</p>
+    </div>
+
+    <div class="scoreboard" id="turn-scores"></div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>Recordatorio</h3></div>
+      <ol class="steps">
+        <li><span>Nada de <b>mímica</b>, gestos ni sonidos.</span></li>
+        <li><span>Nada de <b>«empieza por…»</b> ni «rima con…».</span></li>
+        <li><span>Los <b>derivados</b> de la palabra también están prohibidos.</span></li>
+      </ol>
+    </div>
+
+    <button class="btn btn-primary btn-xl" id="btn-go">Empezar turno →</button>
+    <button class="btn btn-ghost" id="btn-quit">Terminar partida</button>
+    <div class="spacer"></div>
+  </section>
+
+  <!-- ══════════ JUEGO ══════════ -->
+  <section class="screen" id="screen-play">
+    <div class="time-bar"><div class="time-bar-fill" id="time-bar"></div></div>
+
+    <div class="play-top">
+      <div class="play-team" id="play-team">Equipo 1</div>
+      <div class="play-timer" id="play-timer">1:00</div>
+      <div class="play-tally" id="play-tally"></div>
+    </div>
+
+    <div class="tabu-card">
+      <div class="tabu-word" id="tabu-word">—</div>
+      <div class="tabu-sep">No puedes decir</div>
+      <ul class="tabu-list" id="tabu-list"></ul>
+    </div>
+
+    <div class="actions">
+      <button class="act act-taboo" id="btn-taboo">Tabú</button>
+      <button class="act act-skip" id="btn-skip"><span id="skip-label">Paso</span></button>
+      <button class="act act-ok" id="btn-ok">Acertada</button>
+    </div>
+  </section>
+
+  <!-- ══════════ RESUMEN DEL TURNO ══════════ -->
+  <section class="screen" id="screen-summary">
+    <div class="result-head">
+      <p class="eyebrow">Fin del turno</p>
+      <h2 class="result-title">Se acabó el tiempo</h2>
+      <p class="result-sub" id="summary-sub">Equipo 1</p>
+    </div>
+
+    <div class="panel">
+      <div class="score-card">
+        <p class="eyebrow">Puntos de este turno</p>
+        <div class="turn-points" id="turn-points">+0</div>
+        <div class="turn-breakdown" id="turn-breakdown"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h3>Cartas del turno</h3>
+        <span class="eyebrow" id="recap-count"></span>
+      </div>
+      <div class="recap" id="recap"></div>
+    </div>
+
+    <div class="scoreboard" id="summary-scores"></div>
+
+    <button class="btn btn-primary btn-xl" id="btn-next-turn">Siguiente turno →</button>
+    <div class="spacer"></div>
+  </section>
+
+  <!-- ══════════ FINAL ══════════ -->
+  <section class="screen" id="screen-end">
+    <div class="result-head" id="end-head"></div>
+    <div class="scoreboard big" id="end-scores"></div>
+    <div class="panel">
+      <div class="panel-head"><h3>Resumen de la partida</h3></div>
+      <div class="stats" id="end-stats"></div>
+    </div>
+    <button class="btn btn-primary btn-xl" id="btn-rematch">La revancha</button>
+    <button class="btn btn-ghost" data-go="setup">Cambiar ajustes</button>
+    <div class="spacer"></div>
+  </section>
+
+</div>
+
+<script src="words.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
