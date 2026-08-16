@@ -26,7 +26,8 @@ const settings = {
    turn:  { team, card, results, skipsLeft, hits, taboos, skipped } */
 let game = null;
 let turn = null;
-let clock = { endAt: 0, id: null, left: 0 };
+/* pausedMs guarda lo que quedaba al pausar; mientras vale null, el reloj corre. */
+let clock = { endAt: 0, id: null, left: 0, pausedMs: null };
 
 /* ── Utilidades ────────────────────────────────────────── */
 const randInt = (n) => Math.floor(Math.random() * n);
@@ -238,6 +239,20 @@ function drawCard() {
   return game.deck[game.di++];
 }
 
+/* Devuelve una carta ya repartida a la zona pendiente del mazo.
+   La saca de donde está en vez de añadir una copia: si se duplicara, al
+   rebarajar la misma palabra podría salir dos veces en la misma partida.
+   Vuelve unas cuantas posiciones más adelante para que no reaparezca al
+   toque siguiente. */
+function returnCard(card) {
+  const i = game.deck.indexOf(card);
+  if (i < 0 || i >= game.di) return;
+  game.deck.splice(i, 1);
+  game.di--;
+  const from = Math.min(game.deck.length, game.di + 3);
+  game.deck.splice(from + randInt(game.deck.length - from + 1), 0, card);
+}
+
 /* ── Partida ───────────────────────────────────────────── */
 function newGame() {
   if (!settings.packs.length) {
@@ -296,19 +311,22 @@ function startTurn() {
     hits: 0,
     taboos: 0,
     skipped: 0,
-    card: null
+    card: null,
+    drawn: []          // cartas sacadas del mazo, para devolverlas si se cancela
   };
 
   $('#play-team').textContent = teamName(turn.team);
 
   nextCard();
   paintTally();
+  $('#cancel-sheet').hidden = true;
   show('play');
   startClock();
 }
 
 function nextCard() {
   turn.card = drawCard();
+  turn.drawn.push(turn.card);
   const word = $('#tabu-word');
   word.textContent = turn.card.w;
   word.classList.toggle('long', turn.card.w.length > 14);
@@ -363,8 +381,9 @@ function resolveCard(kind) {
     turn.skipped++;
     if (settings.skips >= 0) turn.skipsLeft--;
     vibrate(12);
-    // La carta saltada vuelve al final del mazo: puede reaparecer más tarde.
-    game.deck.push(turn.card);
+    // La carta saltada vuelve al mazo: puede reaparecer más tarde.
+    returnCard(turn.card);
+    turn.drawn.splice(turn.drawn.indexOf(turn.card), 1);
   }
 
   paintTally();
@@ -374,6 +393,7 @@ function resolveCard(kind) {
 /* ── Reloj ─────────────────────────────────────────────── */
 function startClock() {
   stopClock();
+  clock.pausedMs = null;
   clock.left = settings.seconds;
   clock.endAt = Date.now() + settings.seconds * 1000;
   paintClock();
@@ -383,6 +403,21 @@ function startClock() {
 function stopClock() {
   clearInterval(clock.id);
   clock.id = null;
+}
+
+/* Congela el reloj guardando lo que queda; resumeClock lo reanuda desde ahí. */
+function pauseClock() {
+  if (!clock.id) return;
+  clock.pausedMs = Math.max(0, clock.endAt - Date.now());
+  stopClock();
+}
+
+function resumeClock() {
+  if (clock.pausedMs === null) return;
+  clock.endAt = Date.now() + clock.pausedMs;
+  clock.pausedMs = null;
+  paintClock(clock.endAt - Date.now());
+  clock.id = setInterval(tickClock, 100);
 }
 
 function tickClock() {
@@ -406,6 +441,36 @@ function paintClock(msLeft) {
   const fill = $('#time-bar');
   fill.style.transform = `scaleX(${ms / (settings.seconds * 1000)})`;
   fill.classList.toggle('low', secs <= 10);
+}
+
+/* ── Cancelar el turno ─────────────────────────────────── */
+/* Mientras la confirmación está abierta el reloj se queda congelado, así que
+   abrirla por error no cuesta segundos. */
+function openCancel() {
+  if (!turn || !clock.id) return;      // el turno ya había terminado
+  pauseClock();
+  const done = turn.results.length;
+  $('#cancel-detail').innerHTML = done
+    ? `Se pierden las <b>${done} carta${done === 1 ? '' : 's'}</b> de este turno y le vuelve a tocar a <b>${esc(teamName(turn.team))}</b>. El marcador no cambia.`
+    : `Le vuelve a tocar a <b>${esc(teamName(turn.team))}</b>. El marcador no cambia.`;
+  $('#cancel-sheet').hidden = false;
+  $('#btn-resume').focus();
+}
+
+function closeCancel() {
+  $('#cancel-sheet').hidden = true;
+  resumeClock();
+}
+
+function confirmCancel() {
+  $('#cancel-sheet').hidden = true;
+  stopClock();
+  clock.pausedMs = null;
+  // Las cartas del turno cancelado vuelven al mazo: no se pierde ninguna.
+  turn.drawn.forEach(returnCard);
+  turn = null;
+  renderTurnScreen();
+  show('turn');
 }
 
 /* ── Fin de turno ──────────────────────────────────────── */
@@ -575,6 +640,18 @@ function bind() {
   $('#btn-ok').addEventListener('click', () => resolveCard('ok'));
   $('#btn-taboo').addEventListener('click', () => resolveCard('taboo'));
   $('#btn-skip').addEventListener('click', () => resolveCard('skip'));
+
+  $('#btn-cancel').addEventListener('click', openCancel);
+  $('#btn-resume').addEventListener('click', closeCancel);
+  $('#btn-cancel-confirm').addEventListener('click', confirmCancel);
+  // Tocar fuera de la hoja o pulsar Escape equivale a seguir jugando: para
+  // cancelar de verdad hay que pulsar el botón que lo dice.
+  $('#cancel-sheet').addEventListener('click', (e) => {
+    if (e.target === $('#cancel-sheet')) closeCancel();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !$('#cancel-sheet').hidden) closeCancel();
+  });
 
   $('#btn-next-turn').addEventListener('click', nextTurn);
   $('#btn-rematch').addEventListener('click', newGame);

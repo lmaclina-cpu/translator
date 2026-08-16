@@ -173,11 +173,16 @@
   <section class="screen" id="screen-play">
     <div class="time-bar"><div class="time-bar-fill" id="time-bar"></div></div>
 
-    <div class="play-top">
+    <header class="play-head">
+      <div class="play-top">
+        <button class="cancel-btn" id="btn-cancel">
+          <span aria-hidden="true">✕</span> Cancelar
+        </button>
+        <div class="play-timer" id="play-timer">1:00</div>
+        <div class="play-tally" id="play-tally"></div>
+      </div>
       <div class="play-team" id="play-team">Equipo 1</div>
-      <div class="play-timer" id="play-timer">1:00</div>
-      <div class="play-tally" id="play-tally"></div>
-    </div>
+    </header>
 
     <div class="tabu-card">
       <div class="tabu-word" id="tabu-word">—</div>
@@ -189,6 +194,19 @@
       <button class="act act-taboo" id="btn-taboo">Tabú</button>
       <button class="act act-skip" id="btn-skip"><span id="skip-label">Paso</span></button>
       <button class="act act-ok" id="btn-ok">Acertada</button>
+    </div>
+
+    <!-- Confirmación de cancelar: el reloj se queda en pausa mientras está abierta -->
+    <div class="sheet-back" id="cancel-sheet" hidden>
+      <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="cancel-title">
+        <p class="eyebrow">Reloj en pausa</p>
+        <h2 id="cancel-title">¿Cancelar el turno?</h2>
+        <p class="hint" id="cancel-detail">El turno no puntúa y le vuelve a tocar al mismo equipo.</p>
+        <div class="sheet-actions">
+          <button class="btn btn-primary" id="btn-resume">Seguir jugando</button>
+          <button class="btn btn-danger" id="btn-cancel-confirm">Sí, cancelar el turno</button>
+        </div>
+      </div>
     </div>
   </section>
 
