@@ -96,8 +96,10 @@ prohibida que se escape, si el equipo rival la caza, resta uno.
 2. Coge el móvil quien vaya a explicar y pulsa **Empezar turno**: arranca el reloj.
 3. Con cada carta: **Acertada** si la adivinan, **Tabú** si se le escapa una
    prohibida, **Paso** para saltarla.
-4. Suena la bocina, se ve el resumen del turno y le toca al siguiente equipo.
-5. Gana el primer equipo que llegue a los puntos fijados… pero la ronda se
+4. Si hay que parar (alguien ha visto la carta, suena el teléfono, lo que sea),
+   **Cancelar** arriba a la izquierda congela el reloj y pregunta antes de nada.
+5. Suena la bocina, se ve el resumen del turno y le toca al siguiente equipo.
+6. Gana el primer equipo que llegue a los puntos fijados… pero la ronda se
    termina siempre, así que todos juegan el mismo número de turnos. Si hay
    empate arriba, se juega otra ronda.
 
@@ -112,6 +114,7 @@ prohibida que se escape, si el equipo rival la caza, resta uno.
 | **Un tabú resta un punto** | Si se apaga, decir una prohibida solo anula la carta. |
 | **Sonido** | Pitidos en los últimos 5 segundos y bocina al acabar. |
 | **Categorías** | Se combinan varias en un solo mazo mezclado. |
+| **Cancelar turno** | Pastilla pequeña arriba a la izquierda, lejos de los tres botones grandes. Pausa el reloj y pide confirmación; el turno no puntúa, sus cartas vuelven al mazo y repite el mismo equipo. |
 
 El reloj se calcula sobre la hora de fin, no contando segundos: si se bloquea la
 pantalla en mitad del turno, al volver el tiempo está donde tiene que estar.
@@ -132,8 +135,13 @@ de `:root` en `tabu/styles.css`.
 | 🌍 Lugares y viajes | 45 | Ciudades, monumentos y cosas de viajar. |
 | 💻 Tecnología | 40 | Cacharros, apps e internet. |
 | 🧠 Difíciles | 45 | Palabras abstractas. Aquí se sufre. |
+| 👷 Profesiones y oficios | 80 | A qué se dedica la gente. |
+| 🔬 Ciencia y cuerpo | 80 | El cuerpo, el laboratorio y el espacio. |
+| 🏛️ Historia y cultura | 80 | Personajes, arte, música clásica y letras. |
+| 🔧 Motor y taller | 80 | Vehículos, máquinas y herramientas. |
+| 🎉 Fiestas y costumbres | 80 | Celebraciones, manías y cosas de la calle. |
 
-**Total: 447 cartas**, cada una con sus cinco palabras prohibidas.
+**Total: 847 cartas**, cada una con sus cinco palabras prohibidas.
 
 ### Añadir tus propias cartas
 
@@ -172,7 +180,7 @@ tabu/             Tabú, juego distinto
   index.html      Portada, ajustes, turno, carta, resumen y final
   styles.css      Estilos: minimalista, claro y oscuro por tokens
   app.js          Equipos, mazo, reloj, puntuación y marcador
-  words.js        447 cartas con sus cinco palabras prohibidas
+  words.js        847 cartas con sus cinco palabras prohibidas
 ```
 
 ## Publicarlo
