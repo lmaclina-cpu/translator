@@ -171,17 +171,20 @@ function renderPacks() {
     btn.type = 'button';
     btn.className = 'pack' + (settings.packs.includes(pack.id) ? ' on' : '');
     btn.innerHTML = `
-      <span class="pack-emoji">${pack.emoji}</span>
-      <span>
+      <span class="pack-check" aria-hidden="true"></span>
+      <span class="pack-txt">
         <b>${esc(pack.name)}</b>
-        <small>${esc(pack.desc)} · ${pack.cards.length} cartas</small>
+        <small>${esc(pack.desc)}</small>
       </span>
-      <span class="tick">✓</span>`;
+      <span class="pack-count">${pack.cards.length}</span>`;
+    btn.setAttribute('aria-pressed', settings.packs.includes(pack.id) ? 'true' : 'false');
     btn.addEventListener('click', () => {
       const i = settings.packs.indexOf(pack.id);
       if (i >= 0) settings.packs.splice(i, 1);
       else settings.packs.push(pack.id);
-      btn.classList.toggle('on', settings.packs.includes(pack.id));
+      const on = settings.packs.includes(pack.id);
+      btn.classList.toggle('on', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
       $('#packs-warn').hidden = settings.packs.length > 0;
       renderDeckSize();
       saveSettings();
@@ -193,8 +196,8 @@ function renderPacks() {
 function renderDeckSize() {
   const n = deckSize();
   $('#deck-size').textContent = n
-    ? `${n} cartas en el mazo · ${ALL_CARDS} en total`
-    : '';
+    ? `Mazo: ${n} de ${ALL_CARDS} cartas`
+    : 'Mazo vacío';
 }
 
 function renderChips(sel, attr, value) {
@@ -221,7 +224,7 @@ function buildDeck() {
   settings.packs.forEach((id) => {
     const pack = PACKS[id];
     if (!pack) return;
-    pack.cards.forEach((card) => pool.push({ w: card.w, t: card.t, pack: pack.name, emoji: pack.emoji }));
+    pack.cards.forEach((card) => pool.push({ w: card.w, t: card.t, pack: pack.name }));
   });
   return shuffle(pool);
 }
@@ -263,12 +266,13 @@ function renderScoreboard(el, opts) {
     .map((pts, i) => ({ pts, i }))
     .sort((a, b) => (opts && opts.sorted ? b.pts - a.pts : a.i - b.i))
     .forEach(({ pts, i }) => {
+      const lead = pts === best && best > 0;
       const row = document.createElement('div');
-      row.className = 'score-row' + (pts === best && best > 0 ? ' lead' : '');
+      row.className = 'score-row' + (lead ? ' lead' : '');
       row.innerHTML = `
         <span class="dot" style="background:${teamColor(i)}"></span>
         <span>${esc(teamName(i))}</span>
-        ${pts === best && best > 0 ? '<span class="crown">👑</span>' : ''}
+        ${lead ? '<span class="tag">LÍDER</span>' : ''}
         <span class="pts">${pts}</span>`;
       el.appendChild(row);
     });
@@ -277,9 +281,8 @@ function renderScoreboard(el, opts) {
 function renderTurnScreen() {
   const i = game.turnIdx;
   $('#round-tag').textContent = `Ronda ${game.round} · a ${settings.target} puntos`;
-  const name = $('#turn-team');
-  name.textContent = teamName(i);
-  name.style.color = teamColor(i);
+  $('#turn-team').innerHTML =
+    `<span class="name-dot" style="background:${teamColor(i)}"></span>${esc(teamName(i))}`;
   renderScoreboard($('#turn-scores'));
 }
 
@@ -296,9 +299,7 @@ function startTurn() {
     card: null
   };
 
-  const name = $('#play-team');
-  name.textContent = teamName(turn.team);
-  name.style.color = teamColor(turn.team);
+  $('#play-team').textContent = teamName(turn.team);
 
   nextCard();
   paintTally();
@@ -334,15 +335,16 @@ function paintSkipButton() {
   const label = $('#skip-label');
   if (settings.skips < 0) {
     btn.disabled = false;
-    label.textContent = 'PASO';
+    label.textContent = 'Paso';
   } else {
     btn.disabled = turn.skipsLeft <= 0;
-    label.textContent = turn.skipsLeft > 0 ? `PASO (${turn.skipsLeft})` : 'SIN PASES';
+    label.textContent = turn.skipsLeft > 0 ? `Paso (${turn.skipsLeft})` : 'Sin pases';
   }
 }
 
 function paintTally() {
-  $('#play-tally').textContent = `✅ ${turn.hits} · ⛔ ${turn.taboos}`;
+  $('#play-tally').innerHTML =
+    `<span class="t-ok">${turn.hits} ✓</span><span class="t-no">${turn.taboos} ×</span>`;
 }
 
 function resolveCard(kind) {
@@ -436,15 +438,18 @@ function renderSummary(points) {
 
   const recap = $('#recap');
   recap.innerHTML = '';
+  $('#recap-count').textContent = turn.results.length
+    ? `${turn.results.length} carta${turn.results.length === 1 ? '' : 's'}`
+    : '';
   if (!turn.results.length) {
-    recap.innerHTML = '<p class="recap-empty">Ni una sola carta. Ha sido un turno duro. 😬</p>';
+    recap.innerHTML = '<p class="recap-empty">Ni una sola carta resuelta. Turno duro.</p>';
   } else {
     turn.results.forEach((r) => {
       const item = document.createElement('div');
       item.className = 'recap-item ' + r.kind;
-      const icon = r.kind === 'ok' ? '✅' : r.kind === 'taboo' ? '⛔' : '⏭️';
-      const tag = r.kind === 'ok' ? '+1' : r.kind === 'taboo' ? (settings.penalty ? '−1' : '0') : 'PASO';
-      item.innerHTML = `<span>${icon}</span><span>${esc(r.w)}</span><span class="tag">${tag}</span>`;
+      const mark = r.kind === 'ok' ? '✓' : r.kind === 'taboo' ? '×' : '→';
+      const tag = r.kind === 'ok' ? '+1' : r.kind === 'taboo' ? (settings.penalty ? '−1' : '0') : 'paso';
+      item.innerHTML = `<span class="recap-mark">${mark}</span><span>${esc(r.w)}</span><span class="tag">${tag}</span>`;
       recap.appendChild(item);
     });
   }
@@ -453,7 +458,7 @@ function renderSummary(points) {
 
   // El botón cambia de texto si este es el último turno de la ronda.
   const last = game.turnIdx === settings.teamCount - 1;
-  $('#btn-next-turn').textContent = last ? 'CERRAR RONDA ▸' : 'SIGUIENTE TURNO ▸';
+  $('#btn-next-turn').textContent = last ? 'Cerrar ronda →' : 'Siguiente turno →';
 }
 
 /* Solo se gana al cerrar una ronda completa: todos juegan los mismos turnos. */
@@ -480,14 +485,14 @@ function endGame(winner) {
   const head = $('#end-head');
   if (winner === null) {
     head.innerHTML = `
-      <div class="result-emoji">🏳️</div>
-      <div class="result-title">PARTIDA TERMINADA</div>
-      <div class="result-sub">Así quedó el marcador.</div>`;
+      <p class="eyebrow">Partida terminada</p>
+      <h2 class="result-title">Así quedó el marcador</h2>
+      <p class="result-sub">La cortasteis en la ronda ${game.round}.</p>`;
   } else {
     head.innerHTML = `
-      <div class="result-emoji">🏆</div>
-      <div class="result-title win">¡GANA ${esc(teamName(winner)).toUpperCase()}!</div>
-      <div class="result-sub">${game.scores[winner]} puntos en ${game.round} ronda${game.round === 1 ? '' : 's'}.</div>`;
+      <p class="eyebrow">Fin de la partida</p>
+      <h2 class="result-title win">Gana ${esc(teamName(winner))}</h2>
+      <p class="result-sub">${game.scores[winner]} puntos en ${game.round} ronda${game.round === 1 ? '' : 's'}.</p>`;
   }
 
   renderScoreboard($('#end-scores'), { sorted: true });

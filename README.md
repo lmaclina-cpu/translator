@@ -16,8 +16,8 @@ Sin instalación, sin registro y **sin internet**: son archivos estáticos.
 
 Son **apps independientes**: cada una con su propio aspecto (oscura de neón la de
 adultos, clara tipo pegatinas la de peques, pizarra y rojo teja la de lobos,
-verde petróleo y ámbar la de tabú) y sus propios ajustes guardados. Tocar una no
-afecta a las demás.
+minimalista en blanco y negro la de tabú, que además trae tema claro y oscuro)
+y sus propios ajustes guardados. Tocar una no afecta a las demás.
 
 La de Hombres Lobo no es una variante del impostor: reparte los 22 roles del
 juego de mesa, guía al narrador por el orden de la noche mostrando solo los
@@ -92,10 +92,10 @@ prohibida que se escape, si el equipo rival la caza, resta uno.
 
 ### Cómo se juega
 
-1. Configura equipos, tiempo y puntos, y pulsa **EMPEZAR PARTIDA**.
-2. Coge el móvil quien vaya a explicar y pulsa **¡EMPEZAR!**: arranca el reloj.
-3. Con cada carta: **✅ ¡BIEN!** si la adivinan, **⛔ TABÚ** si se le escapa una
-   prohibida, **⏭️ PASO** para saltarla.
+1. Configura equipos, tiempo y puntos, y pulsa **Empezar partida**.
+2. Coge el móvil quien vaya a explicar y pulsa **Empezar turno**: arranca el reloj.
+3. Con cada carta: **Acertada** si la adivinan, **Tabú** si se le escapa una
+   prohibida, **Paso** para saltarla.
 4. Suena la bocina, se ve el resumen del turno y le toca al siguiente equipo.
 5. Gana el primer equipo que llegue a los puntos fijados… pero la ronda se
    termina siempre, así que todos juegan el mismo número de turnos. Si hay
@@ -115,6 +115,10 @@ prohibida que se escape, si el equipo rival la caza, resta uno.
 
 El reloj se calcula sobre la hora de fin, no contando segundos: si se bloquea la
 pantalla en mitad del turno, al volver el tiempo está donde tiene que estar.
+
+La interfaz sigue el tema del sistema: claro y oscuro salen de los mismos
+tokens de color, así que para cambiar la paleta basta con tocar las variables
+de `:root` en `tabu/styles.css`.
 
 ### Cartas incluidas
 
@@ -166,7 +170,7 @@ lobo/             Hombres Lobo, juego distinto
 
 tabu/             Tabú, juego distinto
   index.html      Portada, ajustes, turno, carta, resumen y final
-  styles.css      Estilos: verde petróleo y ámbar
+  styles.css      Estilos: minimalista, claro y oscuro por tokens
   app.js          Equipos, mazo, reloj, puntuación y marcador
   words.js        447 cartas con sus cinco palabras prohibidas
 ```
