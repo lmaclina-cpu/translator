@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#07211f" />
+<title>Tabú 🤐 — Explícalo sin decirlo</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤐</text></svg>" />
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ══════════ INICIO ══════════ -->
+  <section class="screen active" id="screen-home">
+    <div class="hero">
+      <div class="hero-emoji">🤐</div>
+      <h1 class="title">TA<span class="grad">BÚ</span></h1>
+      <p class="tagline">Haz que lo adivinen… sin decir las cinco palabras prohibidas.</p>
+    </div>
+
+    <div class="card how">
+      <h3>¿Cómo se juega?</h3>
+      <ol>
+        <li>Por turnos, <b>una persona de cada equipo</b> coge el móvil.</li>
+        <li>Ve una palabra y <b>cinco palabras prohibidas</b> debajo.</li>
+        <li>Tiene que lograr que su equipo la adivine <b>sin decir ninguna</b> (ni derivados, ni gestos, ni mímica).</li>
+        <li>Si se le escapa una, el equipo rival grita <b>¡TABÚ!</b> y se pulsa el botón rojo.</li>
+        <li>Cuando suena la bocina, le toca al siguiente equipo.</li>
+      </ol>
+    </div>
+
+    <button class="btn btn-primary btn-xl" data-go="setup">JUGAR</button>
+    <p class="mini-note">Sin registro, sin internet. Un solo móvil para todos.</p>
+  </section>
+
+  <!-- ══════════ CONFIGURACIÓN ══════════ -->
+  <section class="screen" id="screen-setup">
+    <header class="topbar">
+      <button class="icon-btn" data-go="home" aria-label="Volver">←</button>
+      <h2>Configurar partida</h2>
+    </header>
+
+    <div class="card">
+      <div class="row-between">
+        <div>
+          <h3>Equipos</h3>
+          <p class="hint">De 2 a 4 equipos</p>
+        </div>
+        <div class="stepper">
+          <button class="step-btn" id="teams-minus" aria-label="Menos equipos">−</button>
+          <span class="step-value" id="teams-count">2</span>
+          <button class="step-btn" id="teams-plus" aria-label="Más equipos">+</button>
+        </div>
+      </div>
+      <div class="names" id="names-list"></div>
+    </div>
+
+    <div class="card">
+      <h3>Tiempo por turno ⏱️</h3>
+      <div class="chips" id="time-chips">
+        <button class="chip" data-time="45">45 s</button>
+        <button class="chip" data-time="60">1 min</button>
+        <button class="chip" data-time="90">1:30</button>
+        <button class="chip" data-time="120">2 min</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Puntos para ganar 🏁</h3>
+      <p class="hint">La ronda siempre se termina: todos los equipos juegan el mismo número de turnos.</p>
+      <div class="chips" id="target-chips">
+        <button class="chip" data-target="10">10</button>
+        <button class="chip" data-target="15">15</button>
+        <button class="chip" data-target="20">20</button>
+        <button class="chip" data-target="30">30</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Pases por turno ⏭️</h3>
+      <p class="hint">Cartas que se pueden saltar sin penalización.</p>
+      <div class="chips" id="skip-chips">
+        <button class="chip" data-skip="0">Ninguno</button>
+        <button class="chip" data-skip="1">1</button>
+        <button class="chip" data-skip="3">3</button>
+        <button class="chip" data-skip="-1">Sin límite</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Reglas de la casa 📋</h3>
+      <label class="switch-row">
+        <span>
+          <b>Un tabú resta un punto</b>
+          <small>Si se apaga, decir una palabra prohibida solo anula la carta.</small>
+        </span>
+        <input type="checkbox" id="opt-penalty" class="switch" checked />
+        <span class="slider" aria-hidden="true"></span>
+      </label>
+      <label class="switch-row">
+        <span>
+          <b>Sonido</b>
+          <small>Pitidos en los últimos segundos y bocina al acabar.</small>
+        </span>
+        <input type="checkbox" id="opt-sound" class="switch" checked />
+        <span class="slider" aria-hidden="true"></span>
+      </label>
+    </div>
+
+    <div class="card">
+      <h3>Categorías</h3>
+      <p class="hint">Elige una o varias. Se mezclan todas en un solo mazo.</p>
+      <div class="packs" id="packs-list"></div>
+      <p class="deck-size" id="deck-size"></p>
+      <p class="warn" id="packs-warn" hidden>Selecciona al menos una categoría.</p>
+    </div>
+
+    <button class="btn btn-primary btn-xl" id="btn-start">EMPEZAR PARTIDA</button>
+    <div class="spacer"></div>
+  </section>
+
+  <!-- ══════════ TURNO (pasar el móvil) ══════════ -->
+  <section class="screen" id="screen-turn">
+    <p class="round-tag" id="round-tag">Ronda 1</p>
+    <div class="turn-hero">
+      <p class="pass-note">Le toca a</p>
+      <h2 class="turn-team" id="turn-team">Equipo 1</h2>
+      <p class="hint center" id="turn-role">Que coja el móvil quien vaya a explicar. Los demás, ¡a adivinar!</p>
+    </div>
+
+    <div class="scoreboard" id="turn-scores"></div>
+
+    <div class="card tips">
+      <h3>Recordatorio</h3>
+      <ul>
+        <li>Nada de <b>mímica</b>, gestos ni sonidos.</li>
+        <li>Nada de decir «empieza por…» ni «rima con…».</li>
+        <li>Los <b>derivados</b> de la palabra también están prohibidos.</li>
+      </ul>
+    </div>
+
+    <button class="btn btn-primary btn-xl" id="btn-go">¡EMPEZAR! ▸</button>
+    <button class="btn btn-ghost" id="btn-quit">Terminar partida</button>
+    <div class="spacer"></div>
+  </section>
+
+  <!-- ══════════ JUEGO ══════════ -->
+  <section class="screen" id="screen-play">
+    <div class="play-top">
+      <div class="play-team" id="play-team">Equipo 1</div>
+      <div class="play-timer" id="play-timer">1:00</div>
+      <div class="play-tally" id="play-tally">✅ 0 · ⛔ 0</div>
+    </div>
+    <div class="time-bar"><div class="time-bar-fill" id="time-bar"></div></div>
+
+    <div class="tabu-card">
+      <div class="tabu-word" id="tabu-word">—</div>
+      <ul class="tabu-list" id="tabu-list"></ul>
+    </div>
+
+    <div class="actions">
+      <button class="act act-taboo" id="btn-taboo">
+        <span class="act-emoji">⛔</span>
+        <span class="act-txt">TABÚ</span>
+      </button>
+      <button class="act act-skip" id="btn-skip">
+        <span class="act-emoji">⏭️</span>
+        <span class="act-txt" id="skip-label">PASO</span>
+      </button>
+      <button class="act act-ok" id="btn-ok">
+        <span class="act-emoji">✅</span>
+        <span class="act-txt">¡BIEN!</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ══════════ RESUMEN DEL TURNO ══════════ -->
+  <section class="screen" id="screen-summary">
+    <div class="result-head">
+      <div class="result-emoji">⏰</div>
+      <div class="result-title">SE ACABÓ EL TIEMPO</div>
+      <div class="result-sub" id="summary-sub">Equipo 1</div>
+    </div>
+
+    <div class="card score-card">
+      <p class="hint">Puntos de este turno</p>
+      <div class="turn-points" id="turn-points">+0</div>
+      <div class="turn-breakdown" id="turn-breakdown"></div>
+    </div>
+
+    <div class="card">
+      <h3>Las cartas del turno</h3>
+      <div class="recap" id="recap"></div>
+    </div>
+
+    <div class="scoreboard" id="summary-scores"></div>
+
+    <button class="btn btn-primary btn-xl" id="btn-next-turn">SIGUIENTE TURNO ▸</button>
+    <div class="spacer"></div>
+  </section>
+
+  <!-- ══════════ FINAL ══════════ -->
+  <section class="screen" id="screen-end">
+    <div class="result-head" id="end-head"></div>
+    <div class="scoreboard big" id="end-scores"></div>
+    <div class="card">
+      <h3>Estadísticas</h3>
+      <div class="stats" id="end-stats"></div>
+    </div>
+    <button class="btn btn-primary btn-xl" id="btn-rematch">LA REVANCHA 🔁</button>
+    <button class="btn btn-ghost" data-go="setup">Cambiar ajustes</button>
+    <div class="spacer"></div>
+  </section>
+
+</div>
+
+<script src="words.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
